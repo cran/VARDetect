@@ -1,4 +1,4 @@
-54b2aa6011be5a45585a5a3a7f53b618 *DESCRIPTION
+cd9f390079e0fa0af6e539a84ef5bcf3 *DESCRIPTION
 6115f9867b3bdaae22e0245234b0c09a *NAMESPACE
 de63c724d8ea8736b8c8857b400f0689 *R/Functions_BSS_SGL.R
 7f1f8935158efd0ef42eda7467493eab *R/Functions_LpS.R
@@ -55,4 +55,4 @@ de698f9e7246b8ecf4c1dc011e5ecf68 *man/weekly.Rd
 1639137bf33449e26e22aec336919fe7 *src/Functions_BSS_SGL.cpp
 61059660eb073d93e00e8ee054237071 *src/Makevars
 61059660eb073d93e00e8ee054237071 *src/Makevars.win
-1ef992f7fc2c2e10f4db0fcd37873ae1 *src/RcppExports.cpp
+db39a27a1a28c928b36bf805deac2a78 *src/RcppExports.cpp
