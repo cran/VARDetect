@@ -1,8 +1,8 @@
-cd9f390079e0fa0af6e539a84ef5bcf3 *DESCRIPTION
+408f017dff02f86d50b00c62e94ce701 *DESCRIPTION
 6115f9867b3bdaae22e0245234b0c09a *NAMESPACE
-de63c724d8ea8736b8c8857b400f0689 *R/Functions_BSS_SGL.R
+7e24f9000d7ce4411fb0600a1a7b2a3f *R/Functions_BSS_SGL.R
 7f1f8935158efd0ef42eda7467493eab *R/Functions_LpS.R
-ca5205ce7dee09839ae1ce16e20e5e21 *R/RcppExports.R
+063bc96039da411e435e221e6898b05e *R/RcppExports.R
 84556275ff89c841d19badec948755ea *R/data.R
 4d518c1a1b215ef521a1d8100963e9d7 *data/weekly.RData
 bbc3de540ff2dd1992b9d6a129b6d254 *man/BIC.Rd
@@ -47,7 +47,7 @@ b5b6e00abb614d839da288ea0afaae4f *man/second.step.local.Rd
 76ac2ec85b60c393d669a468e0e99d8c *man/simu_tbss.Rd
 2b2ccbb1f8eed927ab48f801b868303e *man/simu_var.Rd
 ccccb1fb8594963848116d2b6b4e5d5e *man/sparse.pen.Rd
-d6434ef47c897c54d79a47bea4e7a90e *man/summary.VARDetect.result.Rd
+8b101a07256ab10f1e0a71fd5b94440b *man/summary.VARDetect.result.Rd
 5663f4b6b09cdcc3d94fc7752dda1e69 *man/summary.VARDetect.simu.result.Rd
 e099bb0e45096d4ea2ad93407dd4fd56 *man/tbss.Rd
 725536ac20c50ea4c27f5128b3e3f002 *man/third.step.exhaustive.search.Rd

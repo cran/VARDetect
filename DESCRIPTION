@@ -1,7 +1,7 @@
 Package: VARDetect
 Type: Package
 Title: Multiple Change Point Detection in Structural VAR Models
-Version: 0.1.5
+Version: 0.1.6
 Author: Yue Bai [aut, cre],
   Peiliang Bai [aut],
   Abolfazl Safikhani [aut],
@@ -20,8 +20,8 @@ Imports: stats, MTS, igraph, pracma, graphics, mvtnorm, sparsevar,
 Encoding: UTF-8
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: knitr, rmarkdown
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 NeedsCompilation: yes
-Packaged: 2021-09-19 20:41:08 UTC; baipl
+Packaged: 2022-05-09 16:46:10 UTC; yuebai
 Repository: CRAN
-Date/Publication: 2021-09-19 21:10:02 UTC
+Date/Publication: 2022-05-10 08:00:06 UTC

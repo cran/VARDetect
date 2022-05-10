@@ -3109,7 +3109,7 @@ plot.VARDetect.result <- function(x,
             MTS::MTSplot(x$data)
             abline(v = x$cp, col = "red", lwd = 2)
         }else{
-            ts.plot(data)
+            ts.plot(x$data)
             abline(v = x$cp, col = "red", lwd = 2)
         }
         
@@ -3133,7 +3133,7 @@ plot.VARDetect.result <- function(x,
 }
 
 
-#' Funciton to summarize the change points estimated by VARDetect
+#' Function to summarize the change points estimated by VARDetect
 #' @description Summary method for objects of class \code{VARDetect.result}
 #' @method summary VARDetect.result
 #' @param object a \code{VARDetect.result} object
