@@ -17,7 +17,7 @@ plot_granger(est_mats, threshold = 0.1, layout)
 A series of plots of Granger networks of VAR model parameters
 }
 \description{
-A function to plot Granger causal network for each segment via estimated sparse component
+A function to plot Granger causal network for each segment via estimated sparse component. Note that if it has multiple lags, it only provides the first order Granger causality plot.
 }
 \examples{
 set.seed(1)

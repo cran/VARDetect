@@ -723,15 +723,15 @@ simu_var <- function(method = c("sparse", "group sparse", "fLS", "LS"), nob = 30
 #' @param lambda.1.cv tuning parameter lambda_1 for fused lasso
 #' @param lambda.2.cv tuning parameter lambda_2 for fused lasso
 #' @param mu tuning parameter for low rank component, only available when method is set to "fLS"
-#' @param q the AR order
-#' @param max.iteration max number of iteration for the fused lasso
+#' @param q the VAR lag
+#' @param max.iteration max number of iteration for the Fused lasso
 #' @param tol tolerance for the fused lasso
 #' @param block.size the block size
 #' @param blocks the blocks
 #' @param refit logical; if TRUE, refit the VAR model for parameter estimation. Default is FALSE.
 #' @param use.BIC use BIC for k-means part
 #' @param an.grid a vector of an for grid searching
-#' @param verbose a boolean argument to determine whether provide detailed outputs for each step. Default is FALSE
+#' @param verbose a Boolean argument to determine whether provide detailed outputs for each step. Default is FALSE
 #' @return S3 object of class \code{VARDetect.result}, which contains the followings
 #' \describe{
 #'   \item{data}{the original dataset}
@@ -1095,7 +1095,9 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
                 an.sel <- an.grid[an.idx.final]
             }
             if(refit){
-                cat("Refit for the parameter estimation")
+                if(verbose){
+                    cat("Refit for the parameter estimation")
+                }
                 temp <- final.phi.hat.list.res[[an.idx.final]]
                 cp.final <- final.pts.res[[an.idx.final]]
                 cp.full <- c(1, cp.final, nob + 1)
@@ -1121,7 +1123,9 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
                                                time = time.comparison), class = "VARDetect.result")
                 return(final.result)
             }else{
-                cat("No refit for the parameter estimation")
+                if(verbose){
+                    cat("No refit for the parameter estimation")
+                }
                 final.result <- structure(list(data = data,
                                                q = q,
                                                cp = final.pts.res[[an.idx.final]],
@@ -1306,7 +1310,9 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
             }
             if(method == "sparse"){
                 if(refit){
-                    cat("Refit for the parameter estimation")
+                    if(verbose){
+                        cat("Refit for the parameter estimation")
+                    }
                     temp <- final.phi.hat.list.res[[an.idx.final]]
                     cp.final <- final.pts.res[[an.idx.final]]
                     cp.full <- c(1, cp.final, nob + 1)
@@ -1333,7 +1339,9 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
                                               class = "VARDetect.result")
                     return(final.result)
                 }else{
-                    cat("No refit for the parameter estimation")
+                    if(verbose){
+                        cat("No refit for the parameter estimation")
+                    }
                     final.result <- structure(list(data = data,
                                                    q = q,
                                                    cp = final.pts.res[[an.idx.final]],
@@ -1346,7 +1354,9 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
                 }
             }else if(method == "fLS"){
                 if(refit){
-                    cat("Refit for the parameter estimation")
+                    if(verbose){
+                        cat("Refit for the parameter estimation")
+                    }
                     temp <- final.phi.hat.list.res[[an.idx.final]]
                     cp.final <- final.pts.res[[an.idx.final]]
                     cp.full <- c(1, cp.final, nob + 1)
@@ -1375,11 +1385,13 @@ tbss <- function(data, method = c("sparse", "group sparse", "fLS"),
                                               class = "VARDetect.result")
                     return(final.result)
                 }else{
+                    if(verbose){
+                        cat("No refit for the parameter estimation")
+                    }
                     est_phi <- vector('list', length(final.pts.res[[an.idx.final]]) + 1)
                     for(j in 1:length(est_phi)){
                         est_phi[[j]] <- L_est + final.phi.hat.list.res[[an.idx.final]][[j]]
                     }
-                    cat("No refit for the parameter estimation")
                     final.result <- structure(list(data = data,
                                                    q = q,
                                                    cp = final.pts.res[[an.idx.final]],
@@ -1568,7 +1580,7 @@ first.step.blocks <- function(data.temp, lambda.1.cv, lambda.2.cv, q, max.iterat
         }
     }
 
-    # select the tuning parmaete that has the small cross-validation value
+    # select the tuning parameters that has the small cross-validation value
     lll <- min(which(cv == min(cv, na.rm = TRUE)))
     phi.hat.full <- phi.final[[lll]]
 
@@ -2251,8 +2263,19 @@ third.step.exhaustive.search <- function(data, q, max.iteration = 1000, tol = to
 #' @description Select the lag of the VAR model (if the lag is unknown) using BIC method for total segments
 #'
 #' @param data input data matrix, each column represents the time series component
-#' @param method method is sparse
+#' @param method method is sparse, group sparse and fixed lowrank plus sparse
+#' @param group.case two different types of group sparse, column-wise and row-wise, respectively.
+#' @param group.index specify group sparse index. Default is NULL.
+#' @param lambda.1.cv tuning parameter lambda_1 for fused lasso
+#' @param lambda.2.cv tuning parameter lambda_2 for fused lasso
+#' @param mu tuning parameter for low rank component, only available when method is set to "fLS".
+#' @param block.size the block size
+#' @param blocks the blocks
+#' @param use.BIC use BIC for k-means part
+#' @param an.grid a vector of an for grid searching.
+#' @param threshold a numeric argument, give the threshold for estimated model parameter matrices. Default is NULL.
 #' @param lag_candidates potential lag selection set
+#' @param verbose A Boolean argument, if TRUE, it provides detailed information. Default is FALSE
 #' @return selected lag for VAR series
 #' \describe{
 #'     \item{select_lag}{An integer no less than 1 represents the selected lag of time series.}
@@ -2278,14 +2301,34 @@ third.step.exhaustive.search <- function(data, q, max.iteration = 1000, tol = to
 #' print(select_lag)
 #' }
 #' @export
-lag_selection <- function(data, method = c("sparse", "group sparse", "fLS"), lag_candidates){
+lag_selection <- function(data, method = c("sparse", "group sparse", "fLS"),
+                          group.case = c("columnwise", "rowwise"), group.index = NULL,
+                          lambda.1.cv = NULL, lambda.2.cv = NULL, mu = NULL,
+                          block.size = NULL, blocks = NULL,
+                          use.BIC = TRUE, an.grid = NULL, threshold = NULL,
+                          lag_candidates, verbose = FALSE){
     nob <- length(data[,1])
     p <- length(data[1,])
 
     BIC_full <- rep(0, length(lag_candidates))
     for(i in 1:length(lag_candidates)){
         d <- lag_candidates[i]
-        fit <- tbss(data = data, method = method, q = d, refit = TRUE)
+        fit <- tbss(
+            data = data,
+            method = method,
+            group.case = group.case,
+            group.index = group.index,
+            lambda.1.cv = lambda.1.cv,
+            lambda.2.cv = lambda.2.cv,
+            mu = mu,
+            q = d,
+            block.size = block.size,
+            blocks = blocks,
+            use.BIC = use.BIC,
+            an.grid = an.grid,
+            refit = TRUE,
+            verbose = verbose
+        )
         sparse_mats <- fit$sparse_mats
         cp_est <- fit$cp
         cp_full <- c(1, cp_est, nob + 1)
@@ -2295,10 +2338,13 @@ lag_selection <- function(data, method = c("sparse", "group sparse", "fLS"), lag
             n_temp <- dim(data_temp)[1]
             sparse_mat_temp <- sparse_mats[[j]]
             residual <- c()
-            for(t in ((d+1):n_temp)){
+            for(t in ((d + 1):n_temp)){
                 y_pred <- 0
                 for(dd in 1:d){
                     phi <- sparse_mat_temp[, ((dd - 1) * p + 1):(dd * p)]
+                    if(length(threshold)){
+                        phi[abs(phi) <= threshold] <- 0
+                    }
                     y_pred <- y_pred + phi %*% (data_temp[t - dd, ])
                 }
                 residual <- cbind(residual, data_temp[t, ] - y_pred)
@@ -2910,7 +2956,7 @@ eval_func <- function(true_mats, est_mats){
 
 
 #' Function to plot Granger causality networks
-#' @description A function to plot Granger causal network for each segment via estimated sparse component
+#' @description A function to plot Granger causal network for each segment via estimated sparse component. Note that if it has multiple lags, it only provides the first order Granger causality plot.
 #' @param est_mats A list of numeric sparse matrices, indicating the estimated sparse components for each segment
 #' @param threshold A numeric positive value, used to determine the threshold to present the edges
 #' @param layout A character string, indicates the layout for the igraph plot argument
@@ -2936,7 +2982,7 @@ plot_granger <- function(est_mats, threshold = 0.1, layout){
     seg_length <- length(est_mats)
     for(i in 1:seg_length){
         est_mat <- est_mats[[i]]
-        k <- ncol(est_mat)
+        k <- nrow(est_mat)
         adj_mat <- matrix(0, k, k)
         for(r in 1:k){
             for(c in 1:k){
@@ -2945,7 +2991,7 @@ plot_granger <- function(est_mats, threshold = 0.1, layout){
                 }
             }
         }
-        varnames <- colnames(est_mat)
+        varnames <- rownames(est_mat)
         colnames(adj_mat) = rownames(adj_mat) <- varnames
         net <- graph.adjacency(adj_mat, "directed", diag = FALSE)
         if(layout == "circle"){

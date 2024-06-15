@@ -7,15 +7,48 @@
 lag_selection(
   data,
   method = c("sparse", "group sparse", "fLS"),
-  lag_candidates
+  group.case = c("columnwise", "rowwise"),
+  group.index = NULL,
+  lambda.1.cv = NULL,
+  lambda.2.cv = NULL,
+  mu = NULL,
+  block.size = NULL,
+  blocks = NULL,
+  use.BIC = TRUE,
+  an.grid = NULL,
+  threshold = NULL,
+  lag_candidates,
+  verbose = FALSE
 )
 }
 \arguments{
 \item{data}{input data matrix, each column represents the time series component}
 
-\item{method}{method is sparse}
+\item{method}{method is sparse, group sparse and fixed lowrank plus sparse}
+
+\item{group.case}{two different types of group sparse, column-wise and row-wise, respectively.}
+
+\item{group.index}{specify group sparse index. Default is NULL.}
+
+\item{lambda.1.cv}{tuning parameter lambda_1 for fused lasso}
+
+\item{lambda.2.cv}{tuning parameter lambda_2 for fused lasso}
+
+\item{mu}{tuning parameter for low rank component, only available when method is set to "fLS".}
+
+\item{block.size}{the block size}
+
+\item{blocks}{the blocks}
+
+\item{use.BIC}{use BIC for k-means part}
+
+\item{an.grid}{a vector of an for grid searching.}
+
+\item{threshold}{a numeric argument, give the threshold for estimated model parameter matrices. Default is NULL.}
 
 \item{lag_candidates}{potential lag selection set}
+
+\item{verbose}{A Boolean argument, if TRUE, it provides detailed information. Default is FALSE}
 }
 \value{
 selected lag for VAR series
